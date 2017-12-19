@@ -5,7 +5,7 @@
         <server>
             <id>bintray-repo-maven</id>
             <username>holysheep</username>
-            <password>8015c059dfde17a406353953d0748d7ae63f161d</password>
+            <password>*****</password>
         </server>
     </servers>
 
