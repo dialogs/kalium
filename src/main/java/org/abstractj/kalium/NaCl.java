@@ -112,6 +112,8 @@ public class NaCl {
 
         int CRYPTO_SECRETBOX_XSALSA20POLY1305_NONCEBYTES = 24;
 
+        int crypto_secretbox_keygen(@In byte[] key);
+
         int crypto_secretbox_xsalsa20poly1305(
                 @Out byte[] ct, @In byte[] msg, @In @u_int64_t int length,
                 @In byte[] nonce, @In byte[] key);
