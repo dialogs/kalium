@@ -20,13 +20,15 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import static org.abstractj.kalium.NaCl.Sodium.CRYPTO_SECRETBOX_XSALSA20POLY1305_KEYBYTES;
+import static org.abstractj.kalium.NaCl.Sodium.CRYPTO_SECRETBOX_XSALSA20POLY1305_NONCEBYTES;
+import static org.abstractj.kalium.NaCl.sodium;
 import static org.abstractj.kalium.encoders.Encoder.HEX;
 import static org.abstractj.kalium.fixture.TestVectors.BOX_CIPHERTEXT;
 import static org.abstractj.kalium.fixture.TestVectors.BOX_MESSAGE;
 import static org.abstractj.kalium.fixture.TestVectors.BOX_NONCE;
 import static org.abstractj.kalium.fixture.TestVectors.SECRET_KEY;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class SecretBoxTest {
 
@@ -90,4 +92,23 @@ public class SecretBoxTest {
         box.decrypt(nonce, ciphertext);
         fail("Should raise an exception");
     }
+
+    @Test
+    public void testWithGeneratedKeyAndNonce() {
+        byte[] key = new byte[CRYPTO_SECRETBOX_XSALSA20POLY1305_KEYBYTES];
+        int result = sodium().crypto_secretbox_keygen(key);
+
+        assertEquals(result, CRYPTO_SECRETBOX_XSALSA20POLY1305_KEYBYTES);
+
+        byte[] nonce = new byte[CRYPTO_SECRETBOX_XSALSA20POLY1305_NONCEBYTES];
+        sodium().randombytes(nonce, nonce.length);
+
+        SecretBox box = new SecretBox(key);
+
+        byte[] cypherText = box.encrypt(nonce, "secret message".getBytes());
+        String message = new String(box.decrypt(nonce, cypherText));
+
+        assertEquals("secret message", message);
+    }
+
 }
